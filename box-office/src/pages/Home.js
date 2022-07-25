@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ActorGrid from '../component/actor/ActorGrid';
 import MainPageLayout from '../component/MainPageLayout';
 import ShoeGrid from '../component/show/ShoeGrid';
 import { apiGet } from '../misc/config';
 
+import { useLastQuery } from '../misc/custom-hooks';
+
 const Home = () => {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useLastQuery();
   const [results, setResults] = useState(null);
   const [searchOption, setSearchOption] = useState('shows');
 
   const isShowsSearch = searchOption === 'shows';
-
   const onSearch = () => {
     apiGet(`/search/${searchOption}?q=${input}`).then(result => {
       setResults(result);
@@ -30,11 +31,10 @@ const Home = () => {
   const onRadioChange = ev => {
     setSearchOption(ev.target.value);
   };
-  console.log(searchOption);
 
   const renderResults = () => {
     if (results && results.length === 0) {
-      return <div>No results </div>;
+      return <div>No results</div>;
     }
 
     if (results && results.length > 0) {
@@ -44,6 +44,7 @@ const Home = () => {
         <ActorGrid data={results} />
       );
     }
+
     return null;
   };
 
@@ -51,14 +52,14 @@ const Home = () => {
     <MainPageLayout>
       <input
         type="text"
-        placeholder="search for something"
+        placeholder="Search for something"
         onChange={onInputChange}
         onKeyDown={onKeyDown}
         value={input}
       />
 
       <div>
-        <lable htmlFor="shows-search">
+        <label htmlFor="shows-search">
           Shows
           <input
             id="shows-search"
@@ -67,9 +68,9 @@ const Home = () => {
             checked={isShowsSearch}
             onChange={onRadioChange}
           />
-        </lable>
+        </label>
 
-        <lable htmlFor="actors-search">
+        <label htmlFor="actors-search">
           Actors
           <input
             id="actors-search"
@@ -78,11 +79,11 @@ const Home = () => {
             checked={!isShowsSearch}
             onChange={onRadioChange}
           />
-        </lable>
+        </label>
       </div>
 
       <button type="button" onClick={onSearch}>
-        search
+        Search
       </button>
       {renderResults()}
     </MainPageLayout>
